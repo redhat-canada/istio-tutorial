@@ -2,9 +2,8 @@ apiVersion: "networking.istio.io/v1alpha3"
 kind: "DestinationRule"
 metadata:
   name: "default"
-  namespace: "tutorial"
 spec:
-  host: "*.tutorial.svc.cluster.local"
+  host: "*.svc"
   trafficPolicy:
     tls:
       mode: ISTIO_MUTUAL

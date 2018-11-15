@@ -18,24 +18,14 @@ oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/mast
 
 oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/customer/kubernetes/Service.yml
 
-=== Expose customer
+=== Istio Ingress
 
-Since the `customer` service is the one our users will interact with, let's add an Istio Ingress that exposes that endpoint.
+Since the `customer` service is the one our users will interact with,  an Istio Ingress exposing that endpoint was pre-created in your project. 
 
-[source,bash]
-----
+oc describe gateway gateway-customer
 
-oc create -f 
-oc expose service customer -n tutorial
+image:istio-gw.jpg[alt text]
 
-oc get route -n tutorial
-oc get pods -w -n tutorial
-
-or
-
-kubectl get route -o=jsonpath='{.items[0].spec.host}'
-kubectl get pods -w
-----
 
 IMPORTANT: If your pod fails with `ImagePullBackOff`, it's possible that your current terminal isn't using the proper Docker Environment. See link:#setup-environment[Setup environment].
 
