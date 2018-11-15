@@ -14,6 +14,8 @@ kubectl config current-context
 ----
 
 
+Deploy the Customer microservice using the following commands:
+
 oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/customer/kubernetes/Deployment.yml
 
 oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/customer/kubernetes/Service.yml
@@ -24,7 +26,7 @@ Since the `customer` service is the one our users will interact with,  an Istio 
 
 oc describe gateway gateway-customer
 
-image:istio-gw.jpg[alt text]
+image:../assets/images/istio-gw.jpg[alt text]
 
 
 IMPORTANT: If your pod fails with `ImagePullBackOff`, it's possible that your current terminal isn't using the proper Docker Environment. See link:#setup-environment[Setup environment].
