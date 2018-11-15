@@ -23,16 +23,18 @@ oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/mast
 
 Examine the pods that were created, after the deployment completes, you should see something similar to:
 
+Wait until the status is `Running` and there are `2/2` pods in the `Ready` column. To exit, press `Ctrl+C`
+
 [source,bash]
 ----
 
-oc get pods
+oc get pods -w
 
 NAME                        READY     STATUS    RESTARTS   AGE
 customer-59795dd48d-ckcr6   2/2       Running   0          20m
 ----
 
-Notice the READY column, it shows that 2 containers out of 2 where succesfully deployed.
+Notice the READY column, it shows that 2 containers out of 2 where succesfully deployed. The containers that were deployed are:
 
 [source,bash]
 ----
@@ -98,20 +100,38 @@ Events:
 
 Annotations:  sidecar.istio.io/inject=true is the key, it instructs OpenShift that this microservice needs to be added to the service mesh
 
-The OpenShift master configuration was modified to include an admission controller that support webhooks and signing of Certificate Signing Requests (CSRs). In the ISTIO Control plane, the istio-sidecar-injector was deployed and is listening on a protected URL to automatically inject the Envoy proxy when requested.
+The OpenShift master configuration was modified to include an admission controller that support webhooks and signing of Certificate Signing Requests (CSRs). In the ISTIO Control plane, the istio-sidecar-injector is deployed and is listening (webhook) on a protected URL to automatically inject the Envoy proxy when requested.
 
 === Istio Ingress
 
 Since the `customer` service is the one our users will interact with,  an Istio Ingress exposing that endpoint was pre-created in your project. 
 
+----
 oc describe gateway gateway-customer
+----
 
 image:../assets/images/istio-gw.jpg[alt text]
 
+A VirtualService was also pre-created, have a look at it:
 
-IMPORTANT: If your pod fails with `ImagePullBackOff`, it's possible that your current terminal isn't using the proper Docker Environment. See link:#setup-environment[Setup environment].
+----
+oc describe virtualservice customer
+----
 
-Wait until the status is `Running` and there are `2/2` pods in the `Ready` column. To exit, press `Ctrl+C`
+image:../assets/images/virtualservice.jpg[alt text]
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Then test the customer endpoint
 
