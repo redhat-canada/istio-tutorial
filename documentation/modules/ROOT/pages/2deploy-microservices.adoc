@@ -9,30 +9,96 @@ Make sure you are logged in
 [source,bash]
 ----
 oc whoami
-or
-kubectl config current-context
 ----
 
 
 Deploy the Customer microservice using the following commands:
 
+[source,bash]
+----
 oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/customer/kubernetes/Deployment.yml
 
 oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/customer/kubernetes/Service.yml
+----
 
-
-Examine the pods that were created:
-
-oc get pods
+Examine the pods that were created, after the deployment completes, you should see something similar to:
 
 [source,bash]
 ----
+
+oc get pods
+
 NAME                        READY     STATUS    RESTARTS   AGE
 customer-59795dd48d-ckcr6   2/2       Running   0          20m
 ----
 
 Notice the READY column, it shows that 2 containers out of 2 where succesfully deployed.
 
+[source,bash]
+----
+
+oc describe pod customer-59795dd48d-ckcr6 | grep "Image:"
+
+    Image:         openshift-istio-tech-preview/proxy-init:0.3.0
+    Image:         quay.io/msauve/customer:latest
+    Image:         openshift-istio-tech-preview/proxyv2:0.3.0
+----
+
+1) openshift-istio-tech-preview/proxy-init:0.3.0  is a short lived init container running before the long lived containers are started.
+
+2) openshift-istio-tech-preview/proxyv2:0.3.0  is the Envoy proxy participating in the Service Mesh
+
+3) quay.io/msauve/customer:latest is the actual business microservice
+
+#1 and #2 were automatically injected by OpenShift. To understand how, have a look at the customer deployment:
+
+[source,bash]
+----
+oc describe deployment customer
+
+Name:                   customer
+Namespace:              user01-mesh
+CreationTimestamp:      Thu, 15 Nov 2018 15:26:47 -0500
+Labels:                 app=customer
+                        version=v1
+Annotations:            deployment.kubernetes.io/revision=1
+Selector:               app=customer,version=v1
+Replicas:               1 desired | 1 updated | 1 total | 1 available | 0 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  1 max unavailable, 1 max surge
+Pod Template:
+  Labels:       app=customer
+                version=v1
+  Annotations:  sidecar.istio.io/inject=true
+  Containers:
+   customer:
+    Image:       quay.io/msauve/customer:latest
+    Ports:       8080/TCP, 8778/TCP, 9779/TCP
+    Host Ports:  0/TCP, 0/TCP, 0/TCP
+    Liveness:    exec [curl localhost:8080/health] delay=20s timeout=1s period=5s #success=1 #failure=3
+    Readiness:   exec [curl localhost:8080/health] delay=10s timeout=1s period=5s #success=1 #failure=3
+    Environment:
+      JAVA_OPTIONS:  -Xms128m -Xmx256m -Djava.net.preferIPv4Stack=true -Djava.security.egd=file:///dev/./urandom
+    Mounts:          <none>
+  Volumes:           <none>
+Conditions:
+  Type           Status  Reason
+  ----           ------  ------
+  Available      True    MinimumReplicasAvailable
+  Progressing    True    NewReplicaSetAvailable
+OldReplicaSets:  <none>
+NewReplicaSet:   customer-59795dd48d (1/1 replicas created)
+Events:
+  Type    Reason             Age   From                   Message
+  ----    ------             ----  ----                   -------
+  Normal  ScalingReplicaSet  36m   deployment-controller  Scaled up replica set customer-59795dd48d to 1
+
+----
+
+Annotations:  sidecar.istio.io/inject=true is the key, it instructs OpenShift that this microservice needs to be added to the service mesh
+
+The OpenShift master configuration was modified to include an admission controller that support webhooks and signing of Certificate Signing Requests (CSRs). In the ISTIO Control plane, the istio-sidecar-injector was deployed and is listening on a protected URL to automatically inject the Envoy proxy when requested.
 
 === Istio Ingress
 
