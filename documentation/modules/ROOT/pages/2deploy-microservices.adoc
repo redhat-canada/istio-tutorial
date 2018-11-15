@@ -20,6 +20,20 @@ oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/mast
 
 oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/customer/kubernetes/Service.yml
 
+
+Examine the pods that were created:
+
+oc get pods
+
+[source,bash]
+----
+NAME                        READY     STATUS    RESTARTS   AGE
+customer-59795dd48d-ckcr6   2/2       Running   0          20m
+----
+
+Notice the READY column, it shows that 2 containers out of 2 where succesfully deployed.
+
+
 === Istio Ingress
 
 Since the `customer` service is the one our users will interact with,  an Istio Ingress exposing that endpoint was pre-created in your project. 
