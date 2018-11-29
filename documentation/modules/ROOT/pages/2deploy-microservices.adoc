@@ -4,11 +4,38 @@ include::_attributes.adoc[]
 [#deploycustomer]
 == Deploy customer
 
-Make sure you are logged in
+Make sure you are logged in to OpenShift
 
 [source,bash]
 ----
 oc whoami
+----
+
+If not, please login to the lab OpenShift with your provided user
+
+[source,bash]
+----
+oc login $LAB_HOST -u $USER
+----
+
+Once logged in, you should see 2 projects:
+
+[source,bash]
+----
+oc get projects
+
+NAME           DISPLAY NAME            STATUS
+istio-system                           Active
+user01-mesh    User 01 istio project   Active
+----
+
+istio-system is the namespace for the ISTIO control plane. You have readonly access to this project
+
+userXX-mesh is the project you will use to do the lab. Select that project:
+
+[source,bash]
+----
+oc project userXX-mesh
 ----
 
 
@@ -107,12 +134,12 @@ The OpenShift master configuration was modified to include an admission controll
 Since the `customer` service is the one our users will interact with,  an Istio Ingress exposing that endpoint was pre-created in your project. 
 
 ----
-oc describe gateway gateway-customer
+oc describe gateway customer
 ----
 
 image:../assets/images/istio-gw.jpg[alt text]
 
-A VirtualService was also pre-created. A virtual service is used to configure routes for traffic entering via the ISTIO Ingress Gateway, have a look at it.
+A VirtualService was also pre-created. This virtual service is used to configure routes to the customer microservice for traffic entering via the ISTIO Ingress Gateway, have a look at it.
 
 ----
 oc describe virtualservice customer
@@ -126,21 +153,19 @@ image:../assets/images/virtualservice.jpg[alt text]
 
 
 
-
-
-
-
-
-
-
-
-
 Then test the customer endpoint
+
 
 [source,bash]
 ----
-curl customer-tutorial.$(minishift ip).nip.io
+export CUSTOMER_URL="http://$(oc get route istio-ingressgateway -n istio-system --template='{{ .spec.host }}')/user01-customer"
+
+echo $CUSTOMER_URL
+
+curl $CUSTOMER_URL
 ----
+
+You can also look at $CUSTOMER_URL in your web browser.
 
 You should see the following error because the services `preference` and `recommendation` are not yet deployed.
 
@@ -148,12 +173,15 @@ You should see the following error because the services `preference` and `recomm
 customer => I/O error on GET request for "http://preference:8080": preference; nested exception is java.net.UnknownHostException: preference
 ----
 
-Also review the logs
+Also review the logs for the customer pod. Your pod name will vary
 
 [source,bash]
 ----
-stern customer -c customer
+oc get pods
+oc logs customer-59795dd48d-rddw2 -c customer
 ----
+
+Note that you have to specify the container you want in the pod (-c). 
 
 You should see a stacktrace containing this cause:
 
@@ -171,81 +199,44 @@ cd ../../..
 
 [#deploypreference]
 == Deploy preference
-
-=== Preference build using Docker daemon
-
-[source,bash,subs="+macros,+attributes"]
-----
-cd preference/java/springboot
-mvn clean package
-docker build -t example/preference:v1 .
-docker images | grep preference
-
-oc apply -f <(istioctl kube-inject -f link:{github-repo}/{preference-repo}/kubernetes/Deployment.yml[../../kubernetes/Deployment.yml]) -n tutorial
-oc create -f link:{github-repo}/{preference-repo}/kubernetes/Service.yml[../../kubernetes/Service.yml]
-
-or
-
-kubectl apply -f <(istioctl kube-inject -f link:{github-repo}/{preference-repo}/kubernetes/Deployment.yml[../../kubernetes/Deployment.yml]) -n tutorial
-kubectl create -f link:{github-repo}/{preference-repo}/kubernetes/Service.yml[../../kubernetes/Service.yml]
-----
-
-=== Preference build using OpenShift S2I strategy
+Deploy the preference microservice
 
 [source, bash]
 ----
-cd preference/java/springboot
-oc new-app -l app=preference,version=v1 --name=preference-v1 --context-dir=preference/java/springboot -e JAEGER_SERVICE_NAME=preference JAEGER_ENDPOINT=http://jaeger-collector.istio-system.svc:14268/api/traces JAEGER_PROPAGATION=b3 JAEGER_SAMPLER_TYPE=const JAEGER_SAMPLER_PARAM=1 JAVA_OPTIONS='-Xms128m -Xmx256m -Djava.net.preferIPv4Stack=true' fabric8/s2i-java~https://github.com/redhat-developer-demos/istio-tutorial -o yaml  > preference.yml
-oc apply -f <(istioctl kube-inject -f preference.yml) -n tutorial
-oc delete svc/preference-v1 -n tutorial; oc create -f ../../kubernetes/Service.yml -n tutorial
-oc logs bc/preference-v1 -f -n tutorial
-----
+oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/preference/kubernetes/Deployment.yml
 
+oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/preference/kubernetes/Service.yml
+----
 === Wait preference to be deployed
 
 [source, bash]
 ----
-oc get pods -w -n tutorial
-or
-kubectl get pods -w
+oc get pods -w 
 ----
 
 Wait until the status is `Running` and there are `2/2` pods in the `Ready` column. To exit, press `Ctrl+C`
 
 [source,bash]
 ----
-curl customer-tutorial.$(minishift ip).nip.io
+curl $CUSTOMER_URL
 ----
+
+your response should look like:
+[source,bash]
+----
+customer => 503 preference => I/O error on GET request for "http://recommendation:8080": recommendation: Name or service not known; nested exception is java.net.UnknownHostException: recommendation: Name or service not known
+----
+
+
 
 It will respond with an error since the service `recommendation` is not yet deployed.
 
-NOTE: We could make this a bit more resilient in a future iteration of this tutorial
 
 [source,bash]
 ----
 customer => 503 preference => I/O error on GET request for "http://recommendation:8080": recommendation; nested exception is java.net.UnknownHostException: recommendation
 ----
 
-and check out the logs
-
-[source,bash]
-----
-stern preference -c preference
-----
-
-You should see a stacktrace containing this cause:
-
-[source,bash]
-----
-org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://recommendation:8080": recommendation; nested exception is java.net.UnknownHostException: recommendation
-----
-
-Back to the main istio-tutorial directory
-
-[source,bash]
-----
-cd ../../..
-----
 
 [#deployrecommendation]
 == Deploy recommendation
