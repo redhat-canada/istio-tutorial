@@ -4,60 +4,46 @@ include::_attributes.adoc[]
 [#monitoring]
 == Monitoring
 
-Out of the box, you get monitoring via Prometheus and Grafana. 
+Out of the box, you get monitoring via Grafana. 
 
 [source,bash]
 ----
-open "$(minishift openshift service grafana -u)/d/1/istio-dashboard?refresh=5s&orgId=1"
+export GRAFANA_URL=http://$(oc get route grafana -n istio-system --template='{{ .spec.host }}')/dashboards
+echo $GRAFANA_URL
 ----
 
-image:grafana1.png[alt text]
+using a Web Browser, navigate to $GRAFANA_URL.
 
-[source,bash]
-----
-open "$(minishift openshift service grafana -u)/d/UbsSZTDik/istio-workload-dashboard?refresh=5s&orgId=1"
-----
+Explore the available dashboards:
 
-to check the "Workload of the services"
+Istio Mesh Dashboard - Overview of the overall performance, volume, success rate of the mesh. If you click on a service, you can drill down to the Istio Service Dashboard.
 
-image:grafana2.png[alt text]
+Istio Service Dashboard - Detailed information about a specific service Request Volume, response code, response time, networking
+
+Istio Performance Dashboard - Performance details of the Istio Control Plane
+
+Generate some trafic on your customer microservice to see the results in the dashboard:
+
+an example script is provided here to generate load:
+https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/scripts/run.sh
 
 [#custommetrics]
 == Custom Metrics
 
-Istio also allows you to specify custom metrics which can be seen inside of the Prometheus dashboard
+Istio also allows you to specify custom metrics which can be seen inside of the Grafana dashboard
 
-[source,bash]
-----
-open "$(minishift openshift service prometheus -u)/graph?g0.range_input=5m&g0.expr=&g0.tab=0"
-----
-
-Add the custom metric and rule. First make sure you are in the "istio-tutorial" directory and then
+For this workshop, this section will be done as a demo. We are working in a shared environment and this metric will be a common resource.
 
 [source,bash,subs="+macros,+attributes"]
 ----
-istioctl create -f link:{github-repo}/{istiofiles-dir}/recommendation_requestcount.yml[istiofiles/recommendation_requestcount.yml] -n istio-system
+oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/recommendation_requestcount.yml
 ----
 
-In the Prometheus dashboard, add the following
-
+The following query will be added to Prometheus
 [source,bash]
 ----
-istio_requests_total{destination_service="recommendation.tutorial.svc.cluster.local"}
+istio_requests_total{destination_service="recommendation.user01-mesh.svc.cluster.local"}
 ----
-
-and select `Execute`
-
-image:prometheus_custom_metric.png[alt text]
-
-Then run several requests through the system
-
-[source,bash]
-----
-while true; do curl customer-tutorial.$(minishift ip).nip.io; sleep .5;  done
-----
-
-NOTE: You may have to refresh the browser for the Prometheus graph to update. And you may wish to make the interval 5m (5 minutes) as seen in the screenshot above.
 
 [#tracing]
 == Tracing
@@ -68,11 +54,13 @@ As OpenTracing is "just" an instrumentation library, a concrete tracer is requir
 
 Our `customer` and `preference` services are using the https://github.com/jaegertracing/jaeger-client-java/tree/master/jaeger-tracerresolver[`TracerResolver`] facility from OpenTracing, so that the concrete tracer can be loaded automatically without our code having a hard dependency on Jaeger. Given that the Jaeger tracer can be configured via environment variables, we don't need to do anything in order to get a properly configured Jaeger tracer ready and registered with OpenTracing. That said, there are cases where it's appropriate to manually configure a tracer. Refer to the Jaeger documentation for more information on how to do that.
 
-Let's open the Jaeger console, select `customer` from the list of services and click `Find Traces`
+
 
 [source,bash]
 ----
-minishift openshift service tracing --in-browser
+export JAEGER_URL=https://$(oc get routes -n istio-system jaeger-query --template='{{ .spec.host }}')
+echo $JAEGER_URL
 ----
 
-image:jaegerUI.png[Trace as seen in Jaeger]
+Using a Web Browser, navigate to the $JAEGER_URL.
+In the Jaeger console, select `customer` from the list of services and `your user namespace` from the list of operation and click `Find Traces`
