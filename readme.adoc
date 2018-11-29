@@ -25,7 +25,7 @@ For now, they have a simple exception handling solution for dealing with a missi
 
 toc::[]
 
-link::documentation/modules/ROOT/pages/2deploy-microservices.adoc[Deploy the microservices]
+link:documentation/modules/ROOT/pages/2deploy-microservices.adoc[Deploy the microservices]
 
 include::documentation/modules/ROOT/pages/3monitoring-tracing.adoc[]
 
