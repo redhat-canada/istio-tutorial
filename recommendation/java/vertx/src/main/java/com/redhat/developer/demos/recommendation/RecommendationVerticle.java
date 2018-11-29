@@ -15,7 +15,7 @@ import io.vertx.ext.web.codec.BodyCodec;
 
 public class RecommendationVerticle extends AbstractVerticle {
 
-    private static final String RESPONSE_STRING_FORMAT = "recommendation v1 from '%s': %d\n";
+    private static final String RESPONSE_STRING_FORMAT = "V3 - recommendation v3 from '%s': %d\n";
     private static final String HTTP_NOW = "now.httpbin.org";
 
     private static final String HOSTNAME = parseContainerIdFromHostname(
@@ -60,7 +60,7 @@ public class RecommendationVerticle extends AbstractVerticle {
     }
 
     private void logging(RoutingContext ctx) {
-        logger.info(String.format("recommendation request from %s: %d", HOSTNAME, count));
+        logger.info(String.format("V2 - recommendation request from %s: %d", HOSTNAME, count));
         ctx.next();
     }
 

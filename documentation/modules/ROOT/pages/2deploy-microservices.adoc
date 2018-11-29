@@ -112,7 +112,7 @@ oc describe gateway gateway-customer
 
 image:../assets/images/istio-gw.jpg[alt text]
 
-A VirtualService was also pre-created, have a look at it:
+A VirtualService was also pre-created. A virtual service is used to configure routes for traffic entering via the ISTIO Ingress Gateway, have a look at it.
 
 ----
 oc describe virtualservice customer
@@ -120,7 +120,9 @@ oc describe virtualservice customer
 
 image:../assets/images/virtualservice.jpg[alt text]
 
-
+1) URI exposed outside of the mesh
+2) URI rewritten inside the mesh
+3) Destination Kubernetes (OpenShift) service
 
 
 

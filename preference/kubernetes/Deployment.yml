@@ -13,6 +13,8 @@ spec:
       version: v1
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: 'true'
       labels:
         app: preference
         version: v1
@@ -21,7 +23,7 @@ spec:
       - env:
         - name: JAVA_OPTIONS
           value: -Xms128m -Xmx256m -Djava.net.preferIPv4Stack=true -Djava.security.egd=file:///dev/./urandom
-        image: example/preference:v1
+        image: quay.io/msauve/preference:v1
         imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:

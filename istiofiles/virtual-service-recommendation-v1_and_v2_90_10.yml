@@ -3,21 +3,17 @@ kind: VirtualService
 metadata:
   creationTimestamp: null
   name: recommendation
-  namespace: tutorial
 spec:
   hosts:
   - recommendation
   http:
-  - match:
-    - headers:
-        baggage-user-agent:
-          regex: .*Safari.*
-    route:
-    - destination:
-        host: recommendation
-        subset: version-v2
   - route:
     - destination:
         host: recommendation
         subset: version-v1
+      weight: 90
+    - destination:
+        host: recommendation
+        subset: version-v2
+      weight: 10
 ---

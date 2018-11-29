@@ -3,9 +3,11 @@ kind: DestinationRule
 metadata:
   creationTimestamp: null
   name: recommendation
-  namespace: tutorial
 spec:
   host: recommendation
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
   subsets:
   - labels:
       version: virtualized

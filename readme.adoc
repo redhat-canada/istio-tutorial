@@ -23,7 +23,7 @@ For now, they have a simple exception handling solution for dealing with a missi
 
 toc::[]
 
-
+== Deploy the microservices
 include::documentation/modules/ROOT/pages/2deploy-microservices.adoc[]
 
 include::documentation/modules/ROOT/pages/3monitoring-tracing.adoc[]

@@ -13,6 +13,8 @@ spec:
       version: v2
   template:
     metadata:
+      annotations:
+        sidecar.istio.io/inject: 'true'
       labels:
         app: recommendation
         version: v2
@@ -21,7 +23,7 @@ spec:
       - env:
         - name: JAVA_OPTIONS
           value: -Xmx256m
-        image: example/recommendation:v2
+        image: quay.io/msauve/recommendation:v2
         imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:

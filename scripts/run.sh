@@ -1,5 +1,5 @@
 #!/bin/bash
 while true
-do curl customer-tutorial.$(minishift ip).nip.io
+do curl http://istio-ingressgateway-istio-system.apps.myocp.net/user01-customer
 sleep .5
 done

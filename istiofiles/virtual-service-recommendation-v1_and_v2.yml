@@ -3,7 +3,6 @@ kind: VirtualService
 metadata:
   creationTimestamp: null
   name: recommendation
-  namespace: tutorial
 spec:
   hosts:
   - recommendation
@@ -12,9 +11,9 @@ spec:
     - destination:
         host: recommendation
         subset: version-v1
-      weight: 90
+      weight: 50
     - destination:
         host: recommendation
         subset: version-v2
-      weight: 10
+      weight: 50
 ---

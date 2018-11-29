@@ -3,7 +3,6 @@ kind: DestinationRule
 metadata:
   creationTimestamp: null
   name: recommendation
-  namespace: tutorial
 spec:
   host: recommendation
   subsets:
@@ -11,6 +10,8 @@ spec:
       version: v1
     name: version-v1
     trafficPolicy:
+      tls:
+        mode: ISTIO_MUTUAL
       connectionPool:
         http: {}
         tcp: {}
@@ -25,6 +26,8 @@ spec:
       version: v2
     name: version-v2
     trafficPolicy:
+      tls:
+        mode: ISTIO_MUTUAL
       connectionPool:
         http: {}
         tcp: {}

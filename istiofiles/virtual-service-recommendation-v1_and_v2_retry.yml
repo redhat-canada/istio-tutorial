@@ -3,15 +3,11 @@ kind: VirtualService
 metadata:
   creationTimestamp: null
   name: recommendation
-  namespace: tutorial
 spec:
   hosts:
   - recommendation
   http:
-  - retries:
-      attempts: 3
-      perTryTimeout: 4.000s
-    route:
+  - route:
     - destination:
         host: recommendation
         subset: version-v1
@@ -20,4 +16,7 @@ spec:
         host: recommendation
         subset: version-v2
       weight: 50
+    retries:
+      attempts: 3
+      perTryTimeout: 2s
 ---
