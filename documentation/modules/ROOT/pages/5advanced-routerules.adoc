@@ -4,13 +4,8 @@ include::_attributes.adoc[]
 [IMPORTANT]
 .Before Start
 ====
-You should have NO virtualservice nor destinationrule (in `tutorial` namespace) `istioctl get virtualservice` `istioctl get destinationrule` 
-if so run:
+You should have NO virtualservice nor destinationrule (in your namespace) `oc get virtualservice` `oc get destinationrule` 
 
-[source, bash]
-----
-./scripts/clean.sh
-----
 ====
 
 [#canarydeploymentuseragent]
@@ -30,63 +25,53 @@ The baggage header for user agent has following form `baggage-user-agent: <value
 
 [source,bash,subs="+macros,+attributes"]
 ----
-istioctl create -f link:{github-repo}/{istiofiles-dir}/destination-rule-recommendation-v1-v2.yml[istiofiles/destination-rule-recommendation-v1-v2.yml] -n tutorial
-istioctl create -f link:{github-repo}/{istiofiles-dir}/virtual-service-recommendation-v1.yml[istiofiles/virtual-service-recommendation-v1.yml] -n tutorial
+oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/destination-rule-recommendation-v1-v2.yml
+
+oc create -f  https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-recommendation-v1.yml
 ----
 
-[#safaritov2]
-=== Set Safari users to v2
+[#chrometov2]
+=== Set Chrome users to v2
 
 [source,bash,subs="+macros,+attributes"]
 ----
-istioctl replace -f link:{github-repo}/{istiofiles-dir}/virtual-service-safari-recommendation-v2.yml[istiofiles/virtual-service-safari-recommendation-v2.yml] -n tutorial
+oc replace -f  https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-chrome-recommendation-v2.yml
 
-istioctl get virtualservice -n tutorial
+oc get virtualservice -n tutorial
 ----
 
-and test with a Safari (or even Chrome on Mac since it includes Safari in the string). Safari only sees v2 responses from recommendation
+and test with a Chrome browser. You should see only v2 responses from recommendation.
 
 and test with a Firefox browser, it should only see v1 responses from recommendation.
 
-There are two ways to get the URL for your browser:
 
 [source,bash]
 ----
-minishift openshift service customer --in-browser
+to get the URL:
+echo $CUSTOMER_URL
 ----
 
-That will open the openshift service `customer` in browser
-
-Or
-
-if you need just the url alone:
-
-[source,bash]
-----
-minishift openshift service customer --url
-http://customer-tutorial.192.168.99.102.nip.io
-----
 
 You can also attempt to use the curl -A command to test with different user-agent strings. 
 
 [source,bash]
 ----
-curl -A Safari customer-tutorial.$(minishift ip).nip.io
-curl -A Firefox customer-tutorial.$(minishift ip).nip.io
+curl -A Chrome $CUSTOMER_URL
+curl -A Firefox $CUSTOMER_URL
 ----
 
 You can describe the virtualservice to see its configuration
 
 [source,bash]
 ----
-istioctl get virtualservice -o yaml -n tutorial
+oc get virtualservice -o yaml 
 ----
 
-==== Remove the Safari rule
+==== Remove the Chrome rule
 
 [source,bash]
 ----
-istioctl delete -f istiofiles/virtual-service-safari-recommendation-v2.yml -n tutorial
+oc delete -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-chrome-recommendation-v2.yml
 ----
 
 [#mobiletov2]
@@ -94,58 +79,48 @@ istioctl delete -f istiofiles/virtual-service-safari-recommendation-v2.yml -n tu
 
 [source,bash,subs="+macros,+attributes"]
 ----
-istioctl create -f link:{github-repo}/{istiofiles-dir}/virtual-service-mobile-recommendation-v2.yml[istiofiles/virtual-service-mobile-recommendation-v2.yml] -n tutorial
+oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-mobile-recommendation-v2.yml
 
-curl -A "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4(KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5" customer-tutorial.$(minishift ip).nip.io
+curl -A "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4(KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5" $CUSTOMER_URL
+
+or navigate to $CUSTOMER_URL on your mobile device.
 ----
 
 ==== Clean up
 
 [source,bash]
 ----
-istioctl delete -f istiofiles/destination-rule-recommendation-v1-v2.yml -n tutorial
-istioctl delete -f istiofiles/virtual-service-mobile-recommendation-v2.yml -n tutorial
+oc delete -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/destination-rule-recommendation-v1-v2.yml
+
+oc delete -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-recommendation-v1.yml
 ----
 
 or you can run:
-
-[source, bash]
-----
-./scripts/clean.sh
-----
 
 [#mirroringtraffic]
 == Mirroring Traffic (Dark Launch)
 
 [source,bash]
 ----
-oc get pods -l app=recommendation -n tutorial
+oc get pods -l app=recommendation 
 or 
-kubectl get pods -l app=recommendation -n tutorial
+kubectl get pods -l app=recommendation 
 ----
 
 You should have 2 pods for recommendation based on the steps above
 
 [source,bash]
 ----
-istioctl get virtualservice -n tutorial
-istioctl get destinationrule
+oc get virtualservice 
+oc get destinationrule
 ----
 
-You should have NO virtualservice nor destinationrule (in `tutorial` namespace) `istioctl get virtualservice` `istioctl get destinationrule` 
-if so run:
-
-[source, bash]
-----
-./scripts/clean.sh
-----
-
-Make sure you are in the main directory of "istio-tutorial"
+You should have NO virtualservice nor destinationrule (in `your` namespace) `oc get virtualservice` `oc get destinationrule` 
 
 [source,bash,subs="+macros,+attributes"]
 ----
-istioctl create -f link:{github-repo}/{istiofiles-dir}/destination-rule-recommendation-v1-v2.yml[istiofiles/destination-rule-recommendation-v1-v2.yml] -n tutorial
-istioctl create -f link:{github-repo}/{istiofiles-dir}/virtual-service-recommendation-v1-mirror-v2.yml[istiofiles/virtual-service-recommendation-v1-mirror-v2.yml] -n tutorial
+oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/destination-rule-recommendation-v1-v2.yml
+oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-recommendation-v1-mirror-v2.yml] 
 
 curl customer-tutorial.$(minishift ip).nip.io
 ----
