@@ -158,7 +158,7 @@ Then test the customer endpoint
 
 [source,bash]
 ----
-export CUSTOMER_URL="http://$(oc get route istio-ingressgateway -n istio-system --template='{{ .spec.host }}')/user01-customer"
+export CUSTOMER_URL="http://$(oc get route istio-ingressgateway -n istio-system --template='{{ .spec.host }}')$(oc get virtualservice/customer -o jsonpath='{.spec.http[0].match[0].uri.exact}')"
 
 echo $CUSTOMER_URL
 
@@ -239,7 +239,6 @@ IMPORTANT: The tag `v1` at the end of the image name matters. We will be creatin
 
 
 [#deployrecommendation]
-== Deploy preference
 Deploy the recommendation v1 microservice
 
 [source, bash]
@@ -286,7 +285,7 @@ stern recommendation -c recommendation
 stern will aggregate all logs for containers matching the argument (recommendation) in the current namespace. It is a community build tool.
 
 [#deploypreference]
-== Deploy recommendation
+== Deploy recommendation v2 
 Deploy the recommendation v2 microservice
 
 [source, bash]
