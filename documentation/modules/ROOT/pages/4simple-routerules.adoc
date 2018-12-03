@@ -50,26 +50,65 @@ oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/mast
 
 then create a virtual service:
 ----
-oc create -f 
-https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-recommendation-v1.yml
+oc create -f  https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-recommendation-v1.yml
 ----
 
 Generate some traffic.
 you should only see recommendation v1 being called.
 
-[#alltorecommendationv1]
-=== All users to recommendation:v1
+Ok, so what just happened ? 
+North/south inbound traffic goes into the istio Gateway to enter the service mesh.
 
-Note: "replace" instead of "create" since we are overlaying the previous rule
+The Virtual Service defines a set of traffic routing rules to apply when a host is addressed.
 
-[source,bash,subs="+macros,+attributes"]
 ----
-istioctl replace -f link:{github-repo}/{istiofiles-dir}/virtual-service-recommendation-v1.yml[istiofiles/virtual-service-recommendation-v1.yml] -n tutorial
-
-istioctl get virtualservice
-
-istioctl get virtualservice -o yaml -n tutorial
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: recommendation
+spec:
+  hosts:
+  - recommendation
+  http:
+  - route:
+    - destination:
+        host: recommendation
+        subset: version-v1
+      weight: 100
+---
 ----
+
+In our example, weight based traffic rules is used and all traffic is send to the pod matching version-v1
+
+----
+oc get pods -L version
+----
+
+A Destination Rule defines policies that are applied to the traffic intended for a service after routing has occurred
+
+----
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  creationTimestamp: null
+  name: recommendation
+spec:
+  host: recommendation
+  trafficPolicy:
+    tls:
+      mode: ISTIO_MUTUAL
+  subsets:
+  - labels:
+      version: v1
+    name: version-v1
+  - labels:
+      version: v2
+    name: version-v2
+---
+----
+
+The Service Mesh installed in the lab is using mTLS traffic, we define a DestinationRule to encrypt traffic using 2-way SSL. Otherwise, routing will failed.
+
 
 [#alltorecommendationv1v2]
 === All users to recommendation v1 and v2
@@ -78,15 +117,13 @@ By simply removing the rule
 
 [source,bash]
 ----
-istioctl delete -f istiofiles/virtual-service-recommendation-v1.yml -n tutorial
+
+oc delete -f  https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-recommendation-v1.yml
 ----
 
 and you should see the default behavior of load-balancing between v1 and v2
 
-[source,bash]
-----
-curl customer-tutorial.$(minishift ip).nip.io
-----
+
 
 [#canarydeploymentrecommendation]
 === Canary deployment: Split traffic between v1 and v2
@@ -95,9 +132,9 @@ Canary Deployment scenario: push v2 into the cluster but slowly send end-user tr
 
 [source,bash]
 ----
-$ oc get pods -l app=recommendation -n tutorial
+oc get pods -l app=recommendation
 or
-$ kubectl get pods -l app=recommendation -n tutorial
+kubectl get pods -l app=recommendation 
 
 NAME                                  READY     STATUS    RESTARTS   AGE
 recommendation-v1-3719512284-7mlzw   2/2       Running   6          2h
@@ -108,7 +145,7 @@ Create the `virtualservice` that will send 90% of requests to v1 and 10% to v2
 
 [source,bash,subs="+macros,+attributes"]
 ----
-istioctl create -f link:{github-repo}/{istiofiles-dir}/virtual-service-recommendation-v1_and_v2.yml[istiofiles/virtual-service-recommendation-v1_and_v2.yml] -n tutorial
+oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-recommendation-v1_and_v2_90_10.yml
 ----
 
 and send in several requests:
@@ -122,20 +159,15 @@ In another terminal, change the mixture to be 75/25
 
 [source,bash,subs="+macros,+attributes"]
 ----
-istioctl replace -f link:{github-repo}/{istiofiles-dir}/virtual-service-recommendation-v1_and_v2_75_25.yml[istiofiles/virtual-service-recommendation-v1_and_v2_75_25.yml] -n tutorial
+oc replace -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-recommendation-v1_and_v2_75_25.yml
 ----
 
 Clean up
 
 [source,bash]
 ----
-istioctl delete -f istiofiles/virtual-service-recommendation-v1_and_v2_75_25.yml -n tutorial
-istioctl delete -f istiofiles/destination-rule-recommendation-v1-v2.yml -n tutorial
+oc delete -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-recommendation-v1_and_v2_75_25.yml
+
+oc delete -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/destination-rule-recommendation-v1-v2.yml
 ----
 
-or you can run:
-
-[source, bash]
-----
-./scripts/clean.sh
-----

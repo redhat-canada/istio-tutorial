@@ -31,7 +31,7 @@ link:documentation/modules/ROOT/pages/3monitoring-tracing.adoc[Monitoring and Tr
 
 link:documentation/modules/ROOT/pages/4simple-routerules.adoc[Routing Rules]
 
-include::documentation/modules/ROOT/pages/5advanced-routerules.adoc[]
+link::documentation/modules/ROOT/pages/5advanced-routerules.adoc[Advanced Routing Rules]
 
 include::documentation/modules/ROOT/pages/6fault-injection.adoc[]
 
