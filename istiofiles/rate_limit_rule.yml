@@ -45,8 +45,9 @@ spec:
     namespace: istio-system
   services:
   - name: customer
-    namespace: tutorial
+    namespace: user01-mesh
   - name: preference
-    namespace: tutorial
+    namespace: user01-mesh
   - name: recommendation
-    namespace: tutorial
+    namespace: user01-mesh
+

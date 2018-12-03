@@ -117,12 +117,14 @@ oc get destinationrule
 
 You should have NO virtualservice nor destinationrule (in `your` namespace) `oc get virtualservice` `oc get destinationrule` 
 
+Create traffic mirroring rules (dark launch)
+
 [source,bash,subs="+macros,+attributes"]
 ----
 oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/destination-rule-recommendation-v1-v2.yml
-oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-recommendation-v1-mirror-v2.yml] 
+oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-recommendation-v1-mirror-v2.yml 
 
-curl customer-tutorial.$(minishift ip).nip.io
+curl $CUSTOMER_URL
 ----
 
 Check the logs of recommendation-v2
@@ -130,23 +132,16 @@ Check the logs of recommendation-v2
 [source,bash]
 ----
 oc logs -f `oc get pods|grep recommendation-v2|awk '{ print $1 }'` -c recommendation
-or
-kubectl logs -f `oc get pods|grep recommendation-v2|awk '{ print $1 }'` -c recommendation
 ----
+
+As you should be able to see, the requests to the $CUSTOMER_URL are returning v1, but from the log files, v2 is also called. This is known as Dark Launches, traffic is reaching your new version, but results comes from v1.
 
 Clean up
 
 [source,bash]
 ----
-istioctl delete -f istiofiles/destination-rule-recommendation-v1-v2.yml -n tutorial
-istioctl delete -f istiofiles/virtual-service-recommendation-v1-mirror-v2.yml -n tutorial
-----
-
-or you can run:
-
-[source, bash]
-----
-./scripts/clean.sh
+oc delete -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/destination-rule-recommendation-v1-v2.yml
+oc delete -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-recommendation-v1-mirror-v2.yml 
 ----
 
 [#accesscontrol]
@@ -161,12 +156,12 @@ We'll create a whitelist on the preference service to only allow requests from t
 
 [source,bash,subs="+macros,+attributes"]
 ----
-istioctl create -f link:{github-repo}/{istiofiles-dir}/acl-whitelist.yml[istiofiles/acl-whitelist.yml] -n tutorial
+oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/acl-whitelist.yml
 ----
 
 [source,bash]
 ----
-curl customer-tutorial.$(minishift ip).nip.io
+curl $CUSTOMER_URL
 customer => 404 NOT_FOUND:preferencewhitelist.listchecker.tutorial:customer is not whitelisted
 ----
 
@@ -174,31 +169,10 @@ customer => 404 NOT_FOUND:preferencewhitelist.listchecker.tutorial:customer is n
 
 [source,bash]
 ----
-istioctl delete -f istiofiles/acl-whitelist.yml -n tutorial
+oc delete -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/acl-whitelist.yml
 ----
 
-[#blacklist]
-=== Blacklist
 
-We'll create a blacklist making the customer service blacklist to the preference service. Requests from the customer service to the preference service will return a 403 Forbidden HTTP error code.
-
-[source,bash,subs="+macros,+attributes"]
-----
-istioctl create -f link:{github-repo}/{istiofiles-dir}/acl-blacklist.yml[istiofiles/acl-blacklist.yml] -n tutorial
-----
-
-[source,bash]
-----
-curl customer-tutorial.$(minishift ip).nip.io
-customer => 403 PERMISSION_DENIED:denycustomerhandler.denier.tutorial:Not allowed
-----
-
-==== Clean up
-
-[source,bash]
-----
-istioctl delete -f istiofiles/acl-blacklist.yml -n tutorial
-----
 
 [#loadbalancer]
 == Load Balancer
@@ -209,9 +183,9 @@ Add another v2 pod to the mix
 
 [source,bash]
 ----
-oc scale deployment recommendation-v2 --replicas=2 -n tutorial
+oc scale deployment recommendation-v2 --replicas=2 
 or
-kubectl scale deployment recommendation-v2 --replicas=2 -n tutorial
+kubectl scale deployment recommendation-v2 --replicas=2 
 ----
 
 Wait a bit (oc get pods -w to watch)
@@ -219,20 +193,16 @@ and curl the customer endpoint many times
 
 [source,bash]
 ----
-curl customer-tutorial.$(minishift ip).nip.io
+curl $CUSTOMER_URL
 ----
 
 Add a 3rd v2 pod to the mix
 
 [source,bash]
 ----
-$ oc scale deployment recommendation-v2 --replicas=3 -n tutorial
-$ oc get pods -n tutorial
+$ oc scale deployment recommendation-v2 --replicas=3 
+$ oc get pods 
 
-or 
-
-$ kubectl scale deployment recommendation-v2 --replicas=3 -n tutorial
-$ kubectl get pods -n tutorial
 
 
 NAME                                  READY     STATUS    RESTARTS   AGE
@@ -248,6 +218,10 @@ Wait for those 2/2 (two containers in each pod) and then poll the customer endpo
 
 [source, bash]
 ----
+curl $CUSTOMER_URL
+
+or - if you downloaded the script:
+
 ./scripts/run.sh
 ----
 
@@ -269,7 +243,7 @@ Now, add the Random LB DestinationPolicy
 
 [source,bash,subs="+macros,+attributes"]
 ----
-istioctl create -f link:{github-repo}/{istiofiles-dir}/destination-rule-recommendation_lb_policy_app.yml[istiofiles/destination-rule-recommendation_lb_policy_app.yml] -n tutorial
+oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/destination-rule-recommendation_lb_policy_app.yml
 ----
 
 And you should see a different pattern of which pod is being selected
@@ -293,32 +267,34 @@ Clean up
 
 [source,bash]
 ----
-istioctl delete -f istiofiles/destination-rule-recommendation_lb_policy_app.yml -n tutorial
+oc delete -f  https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/destination-rule-recommendation_lb_policy_app.yml
 
-oc scale deployment recommendation-v2 --replicas=1 -n tutorial
-or
-kubectl scale deployment recommendation-v2 --replicas=1 -n tutorial
+oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/destination-rule-recommendation-v1-v2.yml
+
+oc scale deployment recommendation-v2 --replicas=1 
 ----
 
 [#ratelimiting]
 == Rate Limiting
 
+This section will be done as a DEMO, modifications to the istio Mixer are needed. 
+
 IMPORTANT: The Rate Limiting rules take some time to be applied and reflected. Be patient here!
 
 Here we will limit the number of concurrent requests into recommendation v2
 
-Now apply the rate limit handler
+For this DEMO , we will apply a rate limit handler
 
 [source,bash,subs="+macros,+attributes"]
 ----
-istioctl create -f link:{github-repo}/{istiofiles-dir}/recommendation_rate_limit_handler.yml[istiofiles/recommendation_rate_limit_handler.yml]
+oc create -f recommendation_rate_limit_handler.yml
 ----
 
 Now setup the requestcount quota
 
 [source,bash,subs="+macros,+attributes"]
 ----
-istioctl create -f link:{github-repo}/{istiofiles-dir}/rate_limit_rule.yml[istiofiles/rate_limit_rule.yml]
+oc create -f rate_limit_rule.yml
 ----
 
 Throw some requests at customer:
@@ -349,13 +325,13 @@ customer => preference => recommendation v1 from '99634814-d2z2t': 1938
 customer => preference => recommendation v2 from '2819441432-f4ls5': 112
 ----
 
-Clean up
+DEMO Clean up
 
 [source,bash]
 ----
-istioctl delete -f istiofiles/rate_limit_rule.yml
+oc delete -f rate_limit_rule.yml
 
-istioctl delete -f istiofiles/recommendation_rate_limit_handler.yml
+oc delete -f recommendation_rate_limit_handler.yml
 ----
 
 or you can run:
