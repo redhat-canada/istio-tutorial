@@ -1,19 +1,17 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  creationTimestamp: null
   name: recommendation
-  namespace: tutorial
 spec:
   hosts:
   - recommendation
   http:
   - fault:
-      delay:
-        fixedDelay: 7.000s
-        percent: 50
+      abort:
+        httpStatus: 503
+        percent: 5
     route:
     - destination:
         host: recommendation
-        subset: app-recommendation
+        subset: version-v1
 ---

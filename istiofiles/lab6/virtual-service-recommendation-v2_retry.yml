@@ -6,12 +6,10 @@ spec:
   hosts:
   - recommendation
   http:
-  - fault:
-      abort:
-        httpStatus: 503
-        percent: 50
-    route:
+  - route:
     - destination:
         host: recommendation
-        subset: app-recommendation
+    retries:
+      attempts: 3
+      perTryTimeout: 2s
 ---

@@ -27,7 +27,7 @@ Generate some trafic on your customer microservice to see the results in the das
 an example script is provided here to generate load:
 ----
 cd ${LAB_HOME}
-scrips/run.sh
+./scripts/run.sh
 ----
 
 [#custommetrics]
