@@ -35,7 +35,7 @@ link:documentation/modules/ROOT/pages/5advanced-routerules.adoc[Lab 5) Advanced 
 
 link:documentation/modules/ROOT/pages/6fault-injection.adoc[Lab 6) Fault Injection]
 
-link::documentation/modules/ROOT/pages/8egress.adoc[Lab 6) Egress Control]
+link:documentation/modules/ROOT/pages/8egress.adoc[Lab 7) Egress Control]
 
 
 
