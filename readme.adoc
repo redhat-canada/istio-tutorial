@@ -33,7 +33,7 @@ link:documentation/modules/ROOT/pages/4simple-routerules.adoc[Lab 4) Routing Rul
 
 link:documentation/modules/ROOT/pages/5advanced-routerules.adoc[Lab 5) Advanced Routing Rules]
 
-link:documentation/modules/ROOT/pages/6fault-injection.adoc[Lab 6) Fault Injection - in progress do not use yet]
+link:documentation/modules/ROOT/pages/6fault-injection.adoc[Lab 6) Fault Injection]
 
 include::documentation/modules/ROOT/pages/7circuit-breaker.adoc[]
 
