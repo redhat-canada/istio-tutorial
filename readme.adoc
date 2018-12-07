@@ -22,15 +22,18 @@ customer → preference → recommendation
 
 toc::[]
 
-link:documentation/modules/ROOT/pages/2deploy-microservices.adoc[Deploy the microservices]
+link:documentation/modules/ROOT/pages/1setup.adoc[0) Environment preparation and prerequisite]
 
-link:documentation/modules/ROOT/pages/3monitoring-tracing.adoc[Monitoring and Tracing]
 
-link:documentation/modules/ROOT/pages/4simple-routerules.adoc[Routing Rules]
+link:documentation/modules/ROOT/pages/2deploy-microservices.adoc[1) Deploy the microservices]
 
-link:documentation/modules/ROOT/pages/5advanced-routerules.adoc[Advanced Routing Rules]
+link:documentation/modules/ROOT/pages/3monitoring-tracing.adoc[2) Monitoring and Tracing]
 
-include::documentation/modules/ROOT/pages/6fault-injection.adoc[]
+link:documentation/modules/ROOT/pages/4simple-routerules.adoc[3) Routing Rules]
+
+link:documentation/modules/ROOT/pages/5advanced-routerules.adoc[4) Advanced Routing Rules]
+
+link:documentation/modules/ROOT/pages/6fault-injection.adoc[5) Fault Injection - in progress do not use yet]
 
 include::documentation/modules/ROOT/pages/7circuit-breaker.adoc[]
 
