@@ -47,8 +47,8 @@ public class RecommendationVerticle extends AbstractVerticle {
         Router router = Router.router(vertx);
 //        router.get("/").handler(this::timeout);
         router.get("/").handler(this::logging);
-        router.get("/").handler(this::getRecommendations);
-//        router.get("/").handler(this::getNow);
+//        router.get("/").handler(this::getRecommendations);
+        router.get("/").handler(this::getNow);
         router.get("/misbehave").handler(this::misbehave);
         router.get("/behave").handler(this::behave);
 
