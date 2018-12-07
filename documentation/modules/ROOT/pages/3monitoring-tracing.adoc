@@ -25,14 +25,17 @@ Istio Performance Dashboard - Performance details of the Istio Control Plane
 Generate some trafic on your customer microservice to see the results in the dashboard:
 
 an example script is provided here to generate load:
-https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/scripts/run.sh
+----
+cd ${LAB_HOME}
+scrips/run.sh
+----
 
 [#custommetrics]
-== Custom Metrics
+== Custom Metrics (DEMO ONLY)
 
 Istio also allows you to specify custom metrics which can be seen inside of the Grafana dashboard
 
-For this workshop, this section will be done as a demo. We are working in a shared environment and this metric will be a common resource.
+For this workshop, this section will be done as a DEMO. We are working in a shared environment and this metric will be a common resource.
 
 [source,bash,subs="+macros,+attributes"]
 ----

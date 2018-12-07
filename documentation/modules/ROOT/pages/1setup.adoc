@@ -15,3 +15,18 @@ You will need in this tutorial:
 
 * git
 ** `dnf install git`
+
+[#clone]
+== Cloning the GIT Repo
+
+Clone in your local environment (or provided web terminal) the lab repo:
+
+[source,bash]
+----
+
+git clone https://github.com/redhat-canada/istio-tutorial
+
+cd istio-tutorial
+----
+
+This directory will be known as ${LAB_HOME}

@@ -43,9 +43,11 @@ Deploy the Customer microservice using the following commands:
 
 [source,bash]
 ----
-oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/customer/kubernetes/Deployment.yml
+cd ${LAB_HOME}
 
-oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/customer/kubernetes/Service.yml
+oc create -f customer/kubernetes/Deployment.yml
+
+oc create -f customer/kubernetes/Service.yml
 ----
 
 Examine the pods that were created, after the deployment completes, you should see something similar to:
@@ -141,6 +143,8 @@ image:../assets/images/istio-gw.jpg[alt text]
 
 A VirtualService was also pre-created. This virtual service is used to configure routes to the customer microservice for traffic entering via the ISTIO Ingress Gateway, have a look at it.
 
+DO NOT MODIFY THESE RESOURCES DURING THE LAB
+
 ----
 oc describe virtualservice customer
 ----
@@ -197,9 +201,10 @@ Deploy the preference microservice
 
 [source, bash]
 ----
-oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/preference/kubernetes/Deployment.yml
+cd ${LAB_HOME}
+oc create -f preference/kubernetes/Deployment.yml
 
-oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/preference/kubernetes/Service.yml
+oc create -f preference/kubernetes/Service.yml
 ----
 === Wait preference to be deployed
 
@@ -243,9 +248,9 @@ Deploy the recommendation v1 microservice
 
 [source, bash]
 ----
-oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/recommendation/kubernetes/Deployment.yml
+oc create -f recommendation/kubernetes/Deployment.yml
 
-oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/recommendation/kubernetes/Service.yml
+oc create -f recommendation/kubernetes/Service.yml
 ----
 === Wait for recommendation to be deployed
 
@@ -290,7 +295,7 @@ Deploy the recommendation v2 microservice
 
 [source, bash]
 ----
-oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/recommendation/kubernetes/Deployment-v2.yml
+oc create -f recommendation/kubernetes/Deployment-v2.yml
 
 ----
 === Wait for recommendation to be deployed

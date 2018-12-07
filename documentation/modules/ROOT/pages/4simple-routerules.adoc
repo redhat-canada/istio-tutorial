@@ -3,9 +3,12 @@ include::_attributes.adoc[]
 
 Send several requests to the customer ingress and watch their responses:
 
+An example script is available here: https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/scripts/run.sh
+
+
 [source, bash]
-https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/scripts/run.sh
 ----
+cd ${LAB_HOME}
 ./scripts/run.sh  
 ----
 
@@ -45,12 +48,13 @@ kubectl scale --replicas=1 deployment/recommendation-v2
 First create a destination rule: 
 [source,bash,subs="+macros,+attributes"]
 ----
-oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/destination-rule-recommendation-v1-v2.yml
+cd ${LAB_HOME}
+oc create -f istiofiles/lab4/destination-rule-recommendation-v1-v2.yml
 ----
 
 then create a virtual service:
 ----
-oc create -f  https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-recommendation-v1.yml
+oc create -f  istiofiles/lab4/virtual-service-recommendation-v1.yml
 ----
 
 Generate some traffic.
@@ -118,7 +122,7 @@ By simply removing the rule
 [source,bash]
 ----
 
-oc delete -f  https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-recommendation-v1.yml
+oc delete -f istiofiles/lab4/virtual-service-recommendation-v1.yml
 ----
 
 and you should see the default behavior of load-balancing between v1 and v2
@@ -145,13 +149,14 @@ Create the `virtualservice` that will send 90% of requests to v1 and 10% to v2
 
 [source,bash,subs="+macros,+attributes"]
 ----
-oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-recommendation-v1_and_v2_90_10.yml
+oc create -f istiofiles/lab4/virtual-service-recommendation-v1_and_v2_90_10.yml
 ----
 
 and send in several requests:
 
 [source, bash]
 ----
+cd ${LAB_HOME}
 ./scripts/run.sh
 ----
 
@@ -159,15 +164,15 @@ In another terminal, change the mixture to be 75/25
 
 [source,bash,subs="+macros,+attributes"]
 ----
-oc replace -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-recommendation-v1_and_v2_75_25.yml
+oc replace -f istiofiles/lab4/virtual-service-recommendation-v1_and_v2_75_25.yml
 ----
 
 Clean up
 
 [source,bash]
 ----
-oc delete -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-recommendation-v1_and_v2_75_25.yml
+oc delete -f istiofiles/lab4/virtual-service-recommendation-v1_and_v2_75_25.yml
 
-oc delete -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/destination-rule-recommendation-v1-v2.yml
+oc delete -f istiofiles/lab4/destination-rule-recommendation-v1-v2.yml
 ----
 

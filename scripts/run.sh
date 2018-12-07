@@ -4,5 +4,5 @@ GATEWAY_URL="http://$(oc get route istio-ingressgateway -n istio-system --templa
 
 while true
 do curl $GATEWAY_URL
-sleep .1
+sleep .2
 done
