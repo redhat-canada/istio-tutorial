@@ -4,8 +4,7 @@ include::_attributes.adoc[]
 [IMPORTANT]
 .Before Start
 ====
-You should have NO virtualservice nor destinationrule (in your namespace) `oc get virtualservice` `oc get destinationrule` 
-
+You should only have the customer virtual service and NO destinationrule (in your namespace) `oc get virtualservice` `oc get destinationrule` 
 ====
 
 [#canarydeploymentuseragent]
@@ -25,9 +24,9 @@ The baggage header for user agent has following form `baggage-user-agent: <value
 
 [source,bash,subs="+macros,+attributes"]
 ----
-oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/destination-rule-recommendation-v1-v2.yml
+oc create -f istiofiles/lab5/destination-rule-recommendation-v1-v2.yml
 
-oc create -f  https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-recommendation-v1.yml
+oc create -f istiofiles/lab5/virtual-service-recommendation-v1.yml
 ----
 
 [#chrometov2]
@@ -35,7 +34,7 @@ oc create -f  https://raw.githubusercontent.com/redhat-canada/istio-tutorial/mas
 
 [source,bash,subs="+macros,+attributes"]
 ----
-oc replace -f  https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-chrome-recommendation-v2.yml
+oc replace -f  istiofiles/lab5/virtual-service-chrome-recommendation-v2.yml
 
 oc get virtualservice -n tutorial
 ----
@@ -71,7 +70,7 @@ oc get virtualservice -o yaml
 
 [source,bash]
 ----
-oc delete -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-chrome-recommendation-v2.yml
+oc delete -f istiofiles/lab5/virtual-service-chrome-recommendation-v2.yml
 ----
 
 [#mobiletov2]
@@ -79,7 +78,7 @@ oc delete -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/mast
 
 [source,bash,subs="+macros,+attributes"]
 ----
-oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-mobile-recommendation-v2.yml
+oc create -f istiofiles/lab5/virtual-service-mobile-recommendation-v2.yml
 
 curl -A "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4(KHTML, like Gecko) Version/5.0.2 Mobile/8J2 Safari/6533.18.5" $CUSTOMER_URL
 
@@ -90,9 +89,9 @@ or navigate to $CUSTOMER_URL on your mobile device.
 
 [source,bash]
 ----
-oc delete -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/destination-rule-recommendation-v1-v2.yml
+oc delete -f istiofiles/lab5/destination-rule-recommendation-v1-v2.yml
 
-oc delete -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-recommendation-v1.yml
+oc delete -f istiofiles/lab5/virtual-service-recommendation-v1.yml
 ----
 
 or you can run:
@@ -115,14 +114,14 @@ oc get virtualservice
 oc get destinationrule
 ----
 
-You should have NO virtualservice nor destinationrule (in `your` namespace) `oc get virtualservice` `oc get destinationrule` 
+You should only have the customer virtualservice and no destinationrule (in `your` namespace) `oc get virtualservice` `oc get destinationrule` 
 
 Create traffic mirroring rules (dark launch)
 
 [source,bash,subs="+macros,+attributes"]
 ----
-oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/destination-rule-recommendation-v1-v2.yml
-oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-recommendation-v1-mirror-v2.yml 
+oc create -f istiofiles/lab5/destination-rule-recommendation-v1-v2.yml
+oc create -f istiofiles/lab5/virtual-service-recommendation-v1-mirror-v2.yml 
 
 curl $CUSTOMER_URL
 ----
@@ -140,8 +139,8 @@ Clean up
 
 [source,bash]
 ----
-oc delete -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/destination-rule-recommendation-v1-v2.yml
-oc delete -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/virtual-service-recommendation-v1-mirror-v2.yml 
+oc delete -f istiofiles/lab5/destination-rule-recommendation-v1-v2.yml
+oc delete -f istiofiles/lab5/virtual-service-recommendation-v1-mirror-v2.yml 
 ----
 
 [#accesscontrol]
@@ -156,7 +155,7 @@ We'll create a whitelist on the preference service to only allow requests from t
 
 [source,bash,subs="+macros,+attributes"]
 ----
-oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/acl-whitelist.yml
+oc create -f istiofiles/lab5/acl-whitelist.yml
 ----
 
 [source,bash]
@@ -169,7 +168,7 @@ customer => 404 NOT_FOUND:preferencewhitelist.listchecker.tutorial:customer is n
 
 [source,bash]
 ----
-oc delete -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/acl-whitelist.yml
+oc delete -f istiofiles/lab5/acl-whitelist.yml
 ----
 
 
@@ -193,7 +192,11 @@ and curl the customer endpoint many times
 
 [source,bash]
 ----
-curl $CUSTOMER_URL
+curl $CUSTOMER_URL 
+
+or 
+
+./scripts/run.sh
 ----
 
 Add a 3rd v2 pod to the mix
@@ -243,7 +246,7 @@ Now, add the Random LB DestinationPolicy
 
 [source,bash,subs="+macros,+attributes"]
 ----
-oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/destination-rule-recommendation_lb_policy_app.yml
+oc create -f istiofiles/lab5/destination-rule-recommendation_lb_policy_app.yml
 ----
 
 And you should see a different pattern of which pod is being selected
@@ -267,9 +270,9 @@ Clean up
 
 [source,bash]
 ----
-oc delete -f  https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/destination-rule-recommendation_lb_policy_app.yml
+oc delete -f  istiofiles/lab5/destination-rule-recommendation_lb_policy_app.yml
 
-oc create -f https://raw.githubusercontent.com/redhat-canada/istio-tutorial/master/istiofiles/destination-rule-recommendation-v1-v2.yml
+oc delete -f istio-tutorial/lab5/master/istiofiles/destination-rule-recommendation-v1-v2.yml
 
 oc scale deployment recommendation-v2 --replicas=1 
 ----
@@ -332,11 +335,4 @@ DEMO Clean up
 oc delete -f rate_limit_rule.yml
 
 oc delete -f recommendation_rate_limit_handler.yml
-----
-
-or you can run:
-
-[source, bash]
-----
-./scripts/clean.sh
 ----
