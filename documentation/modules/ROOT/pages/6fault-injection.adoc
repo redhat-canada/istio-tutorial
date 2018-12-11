@@ -64,7 +64,7 @@ The most insidious of possible distributed computing faults is not a "down" serv
 
 [source,bash,subs="+macros,+attributes"]
 ----
-istioctl create -f istiofiles/lab6/virtual-service-recommendation-delay.yml
+oc create -f istiofiles/lab6/virtual-service-recommendation-delay.yml
 ----
 
 And hit the customer endpoint

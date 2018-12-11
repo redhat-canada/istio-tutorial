@@ -4,7 +4,7 @@ include::_attributes.adoc[]
 [IMPORTANT]
 .Before Start
 ====
-You should have NO virtualservice nor destinationrule (in `tutorial` namespace) `istioctl get virtualservice` `istioctl get destinationrule` 
+You should have NO virtualservice nor destinationrule (in `tutorial` namespace) `oc get virtualservice` `oc get destinationrule` 
 if so run:
 
 [source, bash]
@@ -34,8 +34,8 @@ Second, you need to *ensure* you have a `destinationrule` and `virtualservice` i
 
 [source,bash,subs="+macros,+attributes"]
 ----
-istioctl create -f link:{github-repo}/{istiofiles-dir}/destination-rule-recommendation-v1-v2.yml[istiofiles/destination-rule-recommendation-v1-v2.yml] -n tutorial
-istioctl create -f link:{github-repo}/{istiofiles-dir}/virtual-service-recommendation-v1_and_v2_50_50.yml[istiofiles/virtual-service-recommendation-v1_and_v2_50_50.yml] -n tutorial
+oc create -f link:{github-repo}/{istiofiles-dir}/destination-rule-recommendation-v1-v2.yml[istiofiles/destination-rule-recommendation-v1-v2.yml] -n tutorial
+oc create -f link:{github-repo}/{istiofiles-dir}/virtual-service-recommendation-v1_and_v2_50_50.yml[istiofiles/virtual-service-recommendation-v1_and_v2_50_50.yml] -n tutorial
 ----
 
 [#nocircuitbreaker]
