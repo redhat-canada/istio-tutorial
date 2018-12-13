@@ -272,7 +272,7 @@ Clean up
 ----
 oc delete -f  istiofiles/lab5/destination-rule-recommendation_lb_policy_app.yml
 
-oc delete -f istio-tutorial/lab5/master/istiofiles/destination-rule-recommendation-v1-v2.yml
+oc delete -f istiofiles/lab5/destination-rule-recommendation-v1-v2.yml
 
 oc scale deployment recommendation-v2 --replicas=1 
 ----
@@ -290,14 +290,14 @@ For this DEMO , we will apply a rate limit handler
 
 [source,bash,subs="+macros,+attributes"]
 ----
-oc create -f recommendation_rate_limit_handler.yml
+oc create -f istiofiles/lab5/demo/recommendation_rate_limit_handler.yml
 ----
 
 Now setup the requestcount quota
 
 [source,bash,subs="+macros,+attributes"]
 ----
-oc create -f rate_limit_rule.yml
+oc create -f istiofiles/lab5/demo/rate_limit_rule.yml
 ----
 
 Throw some requests at customer:
@@ -332,7 +332,7 @@ DEMO Clean up
 
 [source,bash]
 ----
-oc delete -f rate_limit_rule.yml
+oc delete -f istiofiles/lab5/demo/rate_limit_rule.yml
 
-oc delete -f recommendation_rate_limit_handler.yml
+oc delete -f istiofiles/lab5/demo/recommendation_rate_limit_handler.yml
 ----

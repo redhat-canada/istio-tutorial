@@ -88,6 +88,8 @@ echo $KIALI_URL
 ----
 
 Login to the Kiali console in your Web Browser using the default username and password (do not change the values).
+Kiali username: username
+Kiali password: password
 
 Once in the console, select the `Graph` tab to the left.
 Select your namespace from the `Namespace` dropdown. 
