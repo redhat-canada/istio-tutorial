@@ -34,7 +34,7 @@ recommendation-v1-3719512284-7mlzw   2/2       Running   6          18h
 recommendation-v2-2815683430-vn77w   2/2       Running   0          3h
 ----
 
-You can inject 503's, for approximately 50% of the requests
+You can inject 503's, for approximately 5% of the requests
 
 [source,bash,subs="+macros,+attributes"]
 ----
