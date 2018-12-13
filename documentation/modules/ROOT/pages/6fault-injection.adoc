@@ -42,12 +42,12 @@ oc create -f istiofiles/lab6/destination-rule-recommendation.yml
 
 oc create -f istiofiles/lab6/virtual-service-recommendation-503.yml
 
-curl customer-tutorial.$(minishift ip).nip.io
+curl ${CUSTOMER_URL}
 customer => preference => recommendation v1 from '99634814-sf4cl': 88
-curl customer-tutorial.$(minishift ip).nip.io
+curl ${CUSTOMER_URL}
 customer => 503 preference => 503 fault filter abort
-curl customer-tutorial.$(minishift ip).nip.io
-customer => preference => recommendation v2 from '2819441432-qsp25': 51
+curl ${CUSTOMER_URL}
+/fcustomer => preference => recommendation v2 from '2819441432-qsp25': 51
 ----
 
 Clean up
