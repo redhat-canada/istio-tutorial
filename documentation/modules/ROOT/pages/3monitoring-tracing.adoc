@@ -8,7 +8,7 @@ Out of the box, you get monitoring via Grafana.
 
 [source,bash]
 ----
-export GRAFANA_URL=http://$(oc get route grafana -n istio-system --template='{{ .spec.host }}')/dashboards
+export GRAFANA_URL=http://$(oc get route grafana -n istio-system --template='{{ .spec.host }}')
 echo $GRAFANA_URL
 ----
 
