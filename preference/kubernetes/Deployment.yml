@@ -29,7 +29,7 @@ spec:
           exec:
             command:
             - curl
-            - localhost:8080/health
+            - 127.0.0.1:8080/health
           initialDelaySeconds: 30
           periodSeconds: 5
           timeoutSeconds: 1
@@ -48,7 +48,7 @@ spec:
           exec:
             command:
             - curl
-            - localhost:8080/health
+            - 127.0.0.1:8080/health
           initialDelaySeconds: 30
           periodSeconds: 5
           timeoutSeconds: 1

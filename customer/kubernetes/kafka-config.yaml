@@ -1,0 +1,40 @@
+apiVersion: v1
+data:
+  log4j.properties: |
+    # Do not change this generated file. Logging can be configured in the corresponding kubernetes/openshift resource.
+    log4j.appender.CONSOLE=org.apache.log4j.ConsoleAppender
+    log4j.appender.CONSOLE.layout=org.apache.log4j.PatternLayout
+    log4j.appender.CONSOLE.layout.ConversionPattern=%d{ISO8601} %p %m (%c) [%t]%n
+    kafka.root.logger.level=INFO
+    log4j.rootLogger=${kafka.root.logger.level}, CONSOLE
+    log4j.logger.org.I0Itec.zkclient.ZkClient=INFO
+    log4j.logger.org.apache.zookeeper=INFO
+    log4j.logger.kafka=INFO
+    log4j.logger.org.apache.kafka=INFO
+    log4j.logger.kafka.request.logger=WARN, CONSOLE
+    log4j.logger.kafka.network.Processor=OFF
+    log4j.logger.kafka.server.KafkaApis=OFF
+    log4j.logger.kafka.network.RequestChannel$=WARN
+    log4j.logger.kafka.controller=TRACE
+    log4j.logger.kafka.log.LogCleaner=INFO
+    log4j.logger.state.change.logger=TRACE
+    log4j.logger.kafka.authorizer.logger=INFO
+  metrics-config.yml: '{}'
+kind: ConfigMap
+metadata:
+  creationTimestamp: 2019-06-07T14:06:18Z
+  labels:
+    strimzi.io/cluster: my-cluster
+    strimzi.io/kind: Kafka
+  name: my-cluster-kafka-config
+  namespace: abctest
+  ownerReferences:
+  - apiVersion: kafka.strimzi.io/v1alpha1
+    blockOwnerDeletion: false
+    controller: false
+    kind: Kafka
+    name: my-cluster
+    uid: 3ba46200-892d-11e9-8171-022f5144d706
+  resourceVersion: "96949"
+  selfLink: /api/v1/namespaces/abctest/configmaps/my-cluster-kafka-config
+  uid: 6be33076-892d-11e9-8171-022f5144d706
