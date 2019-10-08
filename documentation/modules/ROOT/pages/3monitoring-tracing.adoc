@@ -8,7 +8,7 @@ Out of the box, you get monitoring via Grafana.
 
 [source,bash]
 ----
-export GRAFANA_URL=http://$(oc get route grafana -n istio-system --template='{{ .spec.host }}')
+export GRAFANA_URL=https://$(oc get route grafana -n istio-system --template='{{ .spec.host }}')
 echo $GRAFANA_URL
 ----
 
@@ -61,7 +61,7 @@ Our `customer` and `preference` services are using the https://github.com/jaeger
 
 [source,bash]
 ----
-export JAEGER_URL=https://$(oc get routes -n istio-system jaeger-query --template='{{ .spec.host }}')
+export JAEGER_URL=https://$(oc get routes -n istio-system jaeger --template='{{ .spec.host }}')
 echo $JAEGER_URL
 ----
 
