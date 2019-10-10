@@ -1,14 +1,12 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
+  creationTimestamp: null
   name: recommendation
 spec:
   host: recommendation
-  trafficPolicy:
-    tls:
-      mode: ISTIO_MUTUAL
   subsets:
   - labels:
-      app: recommendation
-    name: app-recommendation
+      version: v1
+    name: version-v1
 ---

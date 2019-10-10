@@ -8,9 +8,13 @@ spec:
   http:
   - fault:
       abort:
-        httpStatus: 503
-        percent: 5
+        httpStatus: 500
+        percent: 90
     route:
+    - destination:
+        host: recommendation
+        subset: version-v1
+  - route:
     - destination:
         host: recommendation
         subset: version-v1
