@@ -49,7 +49,7 @@ First create a destination rule:
 [source,bash,subs="+macros,+attributes"]
 ----
 cd ${LAB_HOME}
-oc create -f istiofiles/lab4/destination-rule-recommendation-v1-v2.yml
+oc apply  -f istiofiles/lab4/destination-rule-recommendation-v1-v2.yml
 ----
 
 then create a virtual service:
