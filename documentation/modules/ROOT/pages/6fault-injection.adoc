@@ -110,7 +110,7 @@ You will be inside the application container of your pod `recommendation-v2-2036
 
 [source,bash]
 ----
-curl localhost:8080/misbehave
+curl 127.0.0.1:8080/misbehave
 exit
 ----
 
@@ -200,7 +200,7 @@ You will be inside the application container of your pod `recommendation-v2-2036
 
 [source,bash]
 ----
-curl localhost:8080/behave
+curl 127.0.0.1:8080/behave
 exit
 ----
 
