@@ -10,8 +10,7 @@ You will need in this tutorial:
 
 * openshift cli (oc command line tool)
 
-** Available here:  https://github.com/openshift/origin/releases
-** Mac (alternative): `brew install openshift-cli` 
+** Available here:  https://mirror.openshift.com/pub/openshift-v4/clients/oc/4.1/
 
 * git
 ** `dnf install git`
